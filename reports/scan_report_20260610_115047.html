@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vulnerability Scan Report</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #0f1117;
+        color: #e2e8f0;
+        line-height: 1.6;
+      }
+      .header {
+        background: #1a1f2e;
+        border-bottom: 2px solid #3b82f6;
+        padding: 2rem;
+      }
+      .header h1 {
+        font-size: 1.8rem;
+        color: #3b82f6;
+        margin-bottom: 0.5rem;
+      }
+      .header p {
+        color: #94a3b8;
+        font-size: 0.9rem;
+      }
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+      .summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .metric {
+        background: #1a1f2e;
+        border-radius: 8px;
+        padding: 1.25rem;
+        text-align: center;
+      }
+      .metric .num {
+        font-size: 2rem;
+        font-weight: 700;
+        display: block;
+      }
+      .metric .label {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        margin-top: 4px;
+      }
+      .critical {
+        color: #ef4444;
+      }
+      .high {
+        color: #f97316;
+      }
+      .medium {
+        color: #eab308;
+      }
+      .low {
+        color: #22c55e;
+      }
+      .info {
+        color: #3b82f6;
+      }
+      .finding {
+        background: #1a1f2e;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid #374151;
+      }
+      .finding.Critical {
+        border-left-color: #ef4444;
+      }
+      .finding.High {
+        border-left-color: #f97316;
+      }
+      .finding.Medium {
+        border-left-color: #eab308;
+      }
+      .finding.Low {
+        border-left-color: #22c55e;
+      }
+      .finding-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .finding-title {
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .badge {
+        padding: 3px 10px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .badge.Critical {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+      .badge.High {
+        background: rgba(249, 115, 22, 0.15);
+        color: #f97316;
+      }
+      .badge.Medium {
+        background: rgba(234, 179, 8, 0.15);
+        color: #eab308;
+      }
+      .badge.Low {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+      }
+      .finding-body {
+        font-size: 0.875rem;
+      }
+      .finding-row {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .finding-key {
+        color: #64748b;
+        font-weight: 500;
+      }
+      .finding-val {
+        color: #cbd5e1;
+        word-break: break-all;
+      }
+      .remediation {
+        background: rgba(59, 130, 246, 0.08);
+        border-radius: 4px;
+        padding: 0.75rem;
+        margin-top: 0.75rem;
+      }
+      .remediation-label {
+        font-size: 0.75rem;
+        color: #3b82f6;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .no-findings {
+        text-align: center;
+        padding: 3rem;
+        color: #64748b;
+      }
+      .footer {
+        text-align: center;
+        padding: 2rem;
+        color: #475569;
+        font-size: 0.8rem;
+        border-top: 1px solid #1e293b;
+      }
+      h2 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: #94a3b8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div style="max-width: 1100px; margin: 0 auto">
+        <h1>Vulnerability Scan Report</h1>
+        <p>
+          Target: http://localhost &nbsp;|&nbsp; Date: 2026-06-10 11:50:47
+          &nbsp;|&nbsp; Checks: SQL Injection, XSS, Open Ports, Security
+          Headers, Directory Traversal
+        </p>
+        <p style="margin-top: 6px; color: #64748b; font-size: 0.8rem">
+          OWASP Top 10 aligned &nbsp;|&nbsp; Author: Mohamed Fadhih
+          &nbsp;|&nbsp; github.com/mdfadhih/python-vuln-scanner
+        </p>
+      </div>
+    </div>
+    <div class="container">
+      <div class="summary">
+        <div class="metric">
+          <span class="num critical">1</span>
+          <div class="label">Critical</div>
+        </div>
+        <div class="metric">
+          <span class="num high">2</span>
+          <div class="label">High</div>
+        </div>
+        <div class="metric">
+          <span class="num medium">2</span>
+          <div class="label">Medium</div>
+        </div>
+        <div class="metric">
+          <span class="num low">2</span>
+          <div class="label">Low</div>
+        </div>
+        <div class="metric">
+          <span class="num info">7</span>
+          <div class="label">Total findings</div>
+        </div>
+      </div>
+
+      <h2>Findings</h2>
+
+      <div class="finding High">
+        <div class="finding-header">
+          <span class="finding-title">Open Port — SMB (445)</span>
+          <span class="badge High">High</span>
+        </div>
+        <div class="finding-body">
+          <div class="finding-row">
+            <span class="finding-key">OWASP</span
+            ><span class="finding-val"
+              >A05:2021 - Security Misconfiguration</span
+            >
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">URL</span
+            ><span class="finding-val">localhost:445</span>
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">Payload</span
+            ><span class="finding-val">TCP connect to port 445</span>
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">Description</span
+            ><span class="finding-val"
+              >SMB exposed — vulnerable to EternalBlue and ransomware
+              attacks</span
+            >
+          </div>
+          <div class="remediation">
+            <div class="remediation-label">REMEDIATION</div>
+            Close port 445 if not required. If required, restrict access to
+            trusted IP ranges using firewall rules.
+          </div>
+        </div>
+      </div>
+
+      <div class="finding Critical">
+        <div class="finding-header">
+          <span class="finding-title">Open Port — MySQL (3306)</span>
+          <span class="badge Critical">Critical</span>
+        </div>
+        <div class="finding-body">
+          <div class="finding-row">
+            <span class="finding-key">OWASP</span
+            ><span class="finding-val"
+              >A05:2021 - Security Misconfiguration</span
+            >
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">URL</span
+            ><span class="finding-val">localhost:3306</span>
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">Payload</span
+            ><span class="finding-val">TCP connect to port 3306</span>
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">Description</span
+            ><span class="finding-val"
+              >MySQL database port exposed externally</span
+            >
+          </div>
+          <div class="remediation">
+            <div class="remediation-label">REMEDIATION</div>
+            Close port 3306 if not required. If required, restrict access to
+            trusted IP ranges using firewall rules.
+          </div>
+        </div>
+      </div>
+
+      <div class="finding Medium">
+        <div class="finding-header">
+          <span class="finding-title"
+            >Missing Security Header — X-Frame-Options</span
+          >
+          <span class="badge Medium">Medium</span>
+        </div>
+        <div class="finding-body">
+          <div class="finding-row">
+            <span class="finding-key">OWASP</span
+            ><span class="finding-val"
+              >A05:2021 - Security Misconfiguration</span
+            >
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">URL</span
+            ><span class="finding-val">http://localhost</span>
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">Payload</span
+            ><span class="finding-val"
+              >HTTP GET request — checking response headers</span
+            >
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">Description</span
+            ><span class="finding-val"
+              >Missing X-Frame-Options header. Application may be vulnerable to
+              clickjacking attacks where attackers embed the site in an
+              iframe.</span
+            >
+          </div>
+          <div class="remediation">
+            <div class="remediation-label">REMEDIATION</div>
+            Add header: X-Frame-Options: DENY or SAMEORIGIN
+          </div>
+        </div>
+      </div>
+
+      <div class="finding Low">
+        <div class="finding-header">
+          <span class="finding-title"
+            >Missing Security Header — X-Content-Type-Options</span
+          >
+          <span class="badge Low">Low</span>
+        </div>
+        <div class="finding-body">
+          <div class="finding-row">
+            <span class="finding-key">OWASP</span
+            ><span class="finding-val"
+              >A05:2021 - Security Misconfiguration</span
+            >
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">URL</span
+            ><span class="finding-val">http://localhost</span>
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">Payload</span
+            ><span class="finding-val"
+              >HTTP GET request — checking response headers</span
+            >
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">Description</span
+            ><span class="finding-val"
+              >Missing X-Content-Type-Options header. Browser may interpret
+              files as different MIME types enabling MIME-sniffing
+              attacks.</span
+            >
+          </div>
+          <div class="remediation">
+            <div class="remediation-label">REMEDIATION</div>
+            Add header: X-Content-Type-Options: nosniff
+          </div>
+        </div>
+      </div>
+
+      <div class="finding High">
+        <div class="finding-header">
+          <span class="finding-title"
+            >Missing Security Header — Strict-Transport-Security</span
+          >
+          <span class="badge High">High</span>
+        </div>
+        <div class="finding-body">
+          <div class="finding-row">
+            <span class="finding-key">OWASP</span
+            ><span class="finding-val"
+              >A05:2021 - Security Misconfiguration</span
+            >
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">URL</span
+            ><span class="finding-val">http://localhost</span>
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">Payload</span
+            ><span class="finding-val"
+              >HTTP GET request — checking response headers</span
+            >
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">Description</span
+            ><span class="finding-val"
+              >Missing Strict-Transport-Security (HSTS) header. Application does
+              not enforce HTTPS connections, leaving users vulnerable to
+              downgrade attacks.</span
+            >
+          </div>
+          <div class="remediation">
+            <div class="remediation-label">REMEDIATION</div>
+            Add header: Strict-Transport-Security: max-age=31536000;
+            includeSubDomains
+          </div>
+        </div>
+      </div>
+
+      <div class="finding Medium">
+        <div class="finding-header">
+          <span class="finding-title"
+            >Missing Security Header — Content-Security-Policy</span
+          >
+          <span class="badge Medium">Medium</span>
+        </div>
+        <div class="finding-body">
+          <div class="finding-row">
+            <span class="finding-key">OWASP</span
+            ><span class="finding-val"
+              >A05:2021 - Security Misconfiguration</span
+            >
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">URL</span
+            ><span class="finding-val">http://localhost</span>
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">Payload</span
+            ><span class="finding-val"
+              >HTTP GET request — checking response headers</span
+            >
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">Description</span
+            ><span class="finding-val"
+              >Missing Content-Security-Policy header. No CSP means the browser
+              will execute any scripts included in the page, enabling XSS
+              attacks.</span
+            >
+          </div>
+          <div class="remediation">
+            <div class="remediation-label">REMEDIATION</div>
+            Add header: Content-Security-Policy: default-src 'self'
+          </div>
+        </div>
+      </div>
+
+      <div class="finding Low">
+        <div class="finding-header">
+          <span class="finding-title"
+            >Missing Security Header — X-XSS-Protection</span
+          >
+          <span class="badge Low">Low</span>
+        </div>
+        <div class="finding-body">
+          <div class="finding-row">
+            <span class="finding-key">OWASP</span
+            ><span class="finding-val"
+              >A05:2021 - Security Misconfiguration</span
+            >
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">URL</span
+            ><span class="finding-val">http://localhost</span>
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">Payload</span
+            ><span class="finding-val"
+              >HTTP GET request — checking response headers</span
+            >
+          </div>
+          <div class="finding-row">
+            <span class="finding-key">Description</span
+            ><span class="finding-val"
+              >Missing X-XSS-Protection header. Older browsers may not block
+              reflected XSS attacks.</span
+            >
+          </div>
+          <div class="remediation">
+            <div class="remediation-label">REMEDIATION</div>
+            Add header: X-XSS-Protection: 1; mode=block
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      Generated by Python Vulnerability Scanner &nbsp;|&nbsp; For authorised
+      testing only &nbsp;|&nbsp; Mohamed Fadhih
+    </div>
+  </body>
+</html>
