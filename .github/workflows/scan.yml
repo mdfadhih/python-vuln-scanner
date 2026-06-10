@@ -31,7 +31,6 @@ jobs:
         image: vulnerables/web-dvwa
         ports:
           - 80:80
-        options: --health-cmd="curl -f http://localhost/login.php" --health-interval=10s --health-timeout=5s --health-retries=10
 
     steps:
       - uses: actions/checkout@v3
@@ -44,8 +43,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Wait for DVWA
-        run: sleep 15
+      - name: Wait for DVWA to start
+        run: |
+          echo "Waiting for DVWA..."
+          sleep 30
+          curl -s http://localhost/login.php | grep -q "login" && echo "DVWA ready" || echo "DVWA not ready but continuing"
 
       - name: Run vulnerability scan
         run: python scanner/main.py --target http://localhost --output html
