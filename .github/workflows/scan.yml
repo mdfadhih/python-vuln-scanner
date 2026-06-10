@@ -51,7 +51,7 @@ jobs:
         run: python scanner/main.py --target http://localhost --output html
 
       - name: Upload scan report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: scan-report
           path: reports/
