@@ -1,16 +1,16 @@
 # Python Vulnerability Scanner
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
-![OWASP](https://img.shields.io/badge/OWASP-Top%2010-red)
+![OWASP](https://img.shields.io/badge/OWASP-Top%2010%20(5%20checks)-red)
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED)
-![CI](https://img.shields.io/badge/CI-GitHub%20Actions-green)
+[![CI](https://github.com/mdfadhih/python-vuln-scanner/actions/workflows/scan.yml/badge.svg)](https://github.com/mdfadhih/python-vuln-scanner/actions/workflows/scan.yml)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ## Overview
 
-A Python-based web vulnerability scanner that checks for OWASP Top 10 vulnerabilities. Generates clean HTML reports with severity ratings, OWASP references, and remediation guidance. Tested against DVWA (Damn Vulnerable Web App).
+A small Python web vulnerability scanner that implements five OWASP Top 10-related checks. It generates HTML reports with severity ratings, OWASP references, and remediation guidance. Tested against DVWA (Damn Vulnerable Web App).
 
-Built to demonstrate application security skills relevant to the Australian cybersecurity market — combining development and security knowledge.
+Built to demonstrate application security skills relevant to the Australian cybersecurity market — combining development and security knowledge. This is an educational tool with basic checks, not a replacement for tools like OWASP ZAP or Burp Suite (see Limitations).
 
 ---
 
@@ -37,12 +37,7 @@ pip install -r requirements.txt
 python scanner/main.py --target http://localhost --output html
 ```
 
-### Run with Docker
-
-```bash
-docker build -t vuln-scanner .
-docker run vuln-scanner --target http://localhost --output html
-```
+Note: the open-port check uses `python-nmap`, which requires the `nmap` program to be installed on your system.
 
 ### Run against DVWA (test target)
 
@@ -54,9 +49,27 @@ docker run -d -p 80:80 vulnerables/web-dvwa
 python scanner/main.py --target http://localhost --output html
 ```
 
+DVWA setup: open `http://localhost/setup.php`, click "Create / Reset Database", log in (default `admin` / `password`), and set the DVWA security level to Low.
+
+### Run with Docker
+
+Inside a container, `localhost` refers to the container itself, so point the scanner at the host:
+
+```bash
+docker build -t vuln-scanner .
+
+# Linux
+docker run --rm --network host -v "$(pwd)/reports:/app/reports" vuln-scanner --target http://localhost --output html
+
+# Windows / macOS (Docker Desktop)
+docker run --rm -v "$(pwd)/reports:/app/reports" vuln-scanner --target http://host.docker.internal --output html
+```
+
 ---
 
-## Sample Output
+## Sample Output (abridged)
+
+Findings and counts vary by target.
 
 ```
 ╔═══════════════════════════════════════════════╗
@@ -94,7 +107,7 @@ python scanner/main.py --target http://localhost --output html
 
 ## HTML Report
 
-The scanner generates a clean HTML report with:
+The scanner generates an HTML report with:
 
 - Severity-coloured findings (Critical/High/Medium/Low)
 - OWASP Top 10 reference for each finding
@@ -102,7 +115,7 @@ The scanner generates a clean HTML report with:
 - Remediation guidance for each vulnerability
 - Summary metrics dashboard
 
-See `/reports` folder for sample scan output.
+See the `/reports` folder for sample scan output.
 
 ---
 
@@ -118,14 +131,16 @@ python-vuln-scanner/
 │   ├── open_ports.py     ← port scanning
 │   ├── headers.py        ← security header checks
 │   ├── directory.py      ← directory traversal checks
-│   └── report.py         ← HTML/JSON report generator
+│   └── report.py         ← HTML report generator
 ├── reports/              ← scan output saved here
+├── screenshots/          ← evidence screenshots
 ├── tests/
 │   └── test_scanner.py   ← pytest unit tests
 ├── .github/
 │   └── workflows/
 │       └── scan.yml      ← GitHub Actions CI
 ├── Dockerfile
+├── LICENSE
 ├── requirements.txt
 └── README.md
 ```
@@ -138,8 +153,17 @@ GitHub Actions runs on every push:
 
 1. Spins up DVWA as a service container
 2. Runs pytest unit tests
-3. Executes full scan against DVWA
-4. Uploads HTML report as artifact
+3. Executes a scan against DVWA
+4. Uploads the HTML report as an artifact
+
+---
+
+## Limitations
+
+- Basic, payload-based checks only; it can produce false positives and false negatives.
+- Tested only against DVWA, an intentionally vulnerable application.
+- No crawling, authenticated scanning or rate limiting beyond what the code implements.
+- Not a replacement for professional tools such as OWASP ZAP or Burp Suite.
 
 ---
 
@@ -169,6 +193,6 @@ This tool is for authorised security testing only. Only scan systems you own or 
 - AWS Certified Cloud Practitioner
 - Google Cybersecurity Professional Certificate
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue)](https://linkedin.com/in/fadhih)
+[LinkedIn](https://www.linkedin.com/in/fadhih) | [Portfolio](https://cybersecurity-portfolio-drab.vercel.app/)
 [![Project 1](https://img.shields.io/badge/Project_1-Azure_Sentinel-blue)](https://github.com/mdfadhih/soc-lab-threat-detection)
 [![Project 2](https://img.shields.io/badge/Project_2-Home_SOC_Lab-orange)](https://github.com/mdfadhih/home-soc-lab)
